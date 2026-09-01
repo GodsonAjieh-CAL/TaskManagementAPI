@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Data.SqlTypes;
+
+/*Controllers ask for dependencies, they dont ccreate dependencies */
 
 namespace TaskManagementAPI.Controllers
 {
@@ -14,9 +17,23 @@ namespace TaskManagementAPI.Controllers
 
 
         [HttpGet(Name = "GetAll")]
-        public Task<List<string>> GetTask()
+        public async Task<IActionResult> GetTask()
         {
-            return _taskService.GetTask();
+            //This gives an ITaskService
+            var instance = HttpContext.RequestServices.GetService<ITaskService>();
+
+            var result = new
+            {
+                //from constructor injection
+                FirstInstanceId = _taskService.InstanceId,
+                //from asking the container manually
+                SecondInstanceId = instance.InstanceId,
+
+                Tasks = await _taskService.GetTask()
+            };
+
+
+            return Ok(result);
         }
     }
 }

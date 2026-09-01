@@ -13,6 +13,8 @@ namespace TaskManagementAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            //Whenever someone asks for ITaskService give them InMemoryTaskService
             builder.Services.AddScoped<ITaskService, InMemoryTaskService>();
 
             var app = builder.Build();
