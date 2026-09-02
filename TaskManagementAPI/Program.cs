@@ -30,10 +30,12 @@ namespace TaskManagementAPI
 
             app.UseAuthorization();
 
+            app.UseMiddleware<RequestTimingMiddleware>();
 
             app.MapControllers();
 
             app.Run();
+
         }
     }
 }
