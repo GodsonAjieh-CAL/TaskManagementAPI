@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 
 namespace TaskManagementAPI
 {
@@ -17,7 +18,30 @@ namespace TaskManagementAPI
             //Whenever someone asks for ITaskService give them InMemoryTaskService
             builder.Services.AddScoped<ITaskService, InMemoryTaskService>();
 
+            builder.Services.Configure<TaskServiceOptions>(
+                builder.Configuration.GetSection("TaskServiceOptions"));
+
+            builder.Services.AddHealthChecks();
+            builder.Services.AddHealthChecks().AddCheck<TaskServiceHealthCheck>("taskService");
+
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlite("Data Source=task.db"));
+
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                if (!db.Tasks.Any())
+                {
+                    db.Tasks.AddRange(
+                        new TaskItem { Name = "database" },
+                        new TaskItem { Name = "cpu" }
+
+                        );
+                    db.SaveChanges();
+                }
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -31,6 +55,8 @@ namespace TaskManagementAPI
             app.UseAuthorization();
 
             app.UseMiddleware<RequestTimingMiddleware>();
+
+            app.MapHealthChecks("/health");
 
             app.MapControllers();
 

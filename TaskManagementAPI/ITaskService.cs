@@ -7,5 +7,7 @@
         public Guid InstanceId { get; }
 
         Task<List<string>> GetTask();
+
+        Task<string> GetTaskById(int id);
    }
 }

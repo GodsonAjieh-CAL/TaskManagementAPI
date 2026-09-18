@@ -22,6 +22,7 @@ namespace TaskManagementAPI
             //Console.WriteLine($"Stopwatch stopped: {stopwatch}");
 
             var requestPath = context.Request.Path;
+
             _logger.LogInformation("{requestPath} took {stopwatch}", context.Request.Path, stopwatch.ElapsedMilliseconds);
 
         }
