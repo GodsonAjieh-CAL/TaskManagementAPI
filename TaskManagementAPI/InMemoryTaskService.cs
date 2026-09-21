@@ -52,6 +52,39 @@ namespace TaskManagementAPI
 
         }
 
+        public async Task<string> AddTask(string name)
+        {
+            var task = await _context.Tasks.AddAsync(new TaskItem { Name = name });
+            await _context.SaveChangesAsync();
+            return task.Entity.Name;
+
+        }
+
+        public async Task<string> UpdateId(int id, string name)
+        {
+            var task = await _context.Tasks.FindAsync(id);
+
+            if (task == null)
+            {
+                return null;
+            }
+            task.Name = name;
+            await _context.SaveChangesAsync();
+            return task.Name;
+        }
+
+        public async Task<string> DeleteById(int id)
+        {
+            var task = await _context.Tasks.FindAsync(id);
+
+            if(task == null)
+            {
+                return null;
+            }
+            _context.Tasks.Remove(task);
+            await _context.SaveChangesAsync();
+            return task.Name;
+        }
     }
 
     /*public Task<List<string>> GetUsers()

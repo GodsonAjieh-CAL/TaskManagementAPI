@@ -49,5 +49,42 @@ namespace TaskManagementAPI.Controllers
             }
             return Ok(task);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AddTask(string name)
+        {
+            var task = await _taskService.AddTask(name);
+
+            if (task is null)
+            {
+                return BadRequest();
+            }
+            return Ok(task);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateId(int id, string name)
+        {
+            var task = await _taskService.UpdateId(id, name);
+
+            if(task is null)
+            {
+                return NotFound();
+            }
+            return NoContent();
+
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteById(int id)
+        {
+            var task = await _taskService.DeleteById(id);
+            if (task is null)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
+
     }
 }
